@@ -10,7 +10,7 @@ TA = globalThis.TA || {};
 
 TA.net = (function () {
   /* Point this at your Render service. Set once, at deploy time. */
-  var SERVER_URL = 'wss://tank-arena.onrender.com';
+  var SERVER_URL = 'wss://tank-arena-bo1b.onrender.com';
   var CONNECT_TIMEOUT = 4500;
   var RENDER_DELAY = 110;   // ms behind the newest snapshot when interpolating
 
