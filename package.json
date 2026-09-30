@@ -1,0 +1,16 @@
+{
+  "name": "tank-arena",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cartoony tank shooter: canvas client plus an authoritative Node/ws match server with human-only lobbies.",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node test_sim.js && node test_lobbies.js && node test_rematch.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

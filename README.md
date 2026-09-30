@@ -15,9 +15,6 @@ client fits in about 115KB.
 
 ## Running locally
 
-The server serves the game too, so you only need one process:
-
-    cd server
     npm install
     npm start
 
@@ -25,6 +22,9 @@ Then open http://localhost:8787
 
 Port 8787 rather than 3000 because Cudic already serves this project on 3000.
 Render injects `PORT` itself.
+
+Dependencies live at the repo root so that `npm install` works whether Render
+builds from the root or from a subdirectory.
 
 ## Playing
 
@@ -49,17 +49,18 @@ Gamepads work. In local 2-player, player two uses the arrow keys and numpad.
 Each one starts and stops its own server, so they can be run in any order and
 leave nothing running:
 
-    $env:NODE_PATH="$PWD\server\node_modules"
+    npm test
+
+or individually:
 
     node test_sim.js       # physics, collision, teams, AI, win conditions
-    node test_lobbies.js   # create / list / join by code / quick play
+    node test_lobbies.js   # create / list / join by code / quick play / spectate
     node test_rematch.js   # rematch must not spawn an empty match
-    node test_lobby.js     # lobby protocol smoke test
 
 ## Deploying the server
 
-Push to GitHub, then on Render: root directory `server`, build `npm install`,
-start `npm start`. Then point the client at it in one place:
+Push to GitHub, then on Render: build `npm install`, start `npm start`, leave the
+root directory blank. Then point the client at it in one place:
 
     game/net.js  ->  var SERVER_URL = 'wss://your-host.onrender.com';
 
