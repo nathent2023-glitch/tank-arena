@@ -1,0 +1,17 @@
+{
+  "name": "tank-arena-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Authoritative match server for Tank Arena (Cudic). In-memory rooms, JSON snapshots, 20Hz.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

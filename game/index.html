@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Tank Arena</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23d2d2d2'/%3E%3Crect x='2' y='6' width='12' height='5' fill='%23141414'/%3E%3Crect x='6' y='3' width='5' height='3' fill='%23141414'/%3E%3Crect x='11' y='4' width='5' height='2' fill='%23141414'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<!-- Load order matters: tanks -> sim -> ai, because ai.js captures TA.sim at
+     definition time. Every script tag is empty on purpose -- Cudic's player
+     rewrites src="" into inline classic scripts and drops any inline content. -->
+<script src="tanks.js"></script>
+<script src="sim.js"></script>
+<script src="ai.js"></script>
+<script src="render.js"></script>
+<script src="input.js"></script>
+<script src="audio.js"></script>
+<script src="net.js"></script>
+<script src="ui.js"></script>
+<script src="main.js"></script>
+
+<!-- ===================================================== title -->
+<section class="screen" id="scr-title">
+  <div class="menu">
+    <div class="item" data-act="new">NEW GAME</div>
+    <div class="item" data-act="practice">PRACTICE</div>
+    <div class="item" data-act="options">OPTIONS</div>
+  </div>
+</section>
+
+<!-- ===================================================== mode select -->
+<section class="screen hidden" id="scr-modes">
+  <div class="menu">
+    <div class="item" data-mode="ffa">FREE FOR ALL</div>
+    <div class="item" data-mode="team">TEAM DEATHMATCH</div>
+    <div class="item" data-mode="duel">ONE ON ONE</div>
+    <div class="item" data-mode="duel" data-humans="2">LOCAL 2 PLAYER</div>
+    <div class="item" data-act="back">BACK</div>
+  </div>
+</section>
+
+<!-- ===================================================== lobby -->
+<section class="screen hidden" id="scr-lobby">
+  <div class="menu">
+    <div class="note" id="lobby-mode">MATCHES</div>
+    <div class="item" data-act="quick">QUICK PLAY</div>
+    <div class="item" data-act="create">CREATE LOBBY</div>
+    <div class="note lobby-hint">OPEN LOBBIES - PICK ONE TO JOIN</div>
+    <div id="lobby-list" class="rooms"></div>
+    <div class="item" data-act="back">BACK</div>
+  </div>
+</section>
+
+<!-- ===================================================== options -->
+<section class="screen hidden" id="scr-options">
+  <div class="menu">
+    <div class="item" data-opt="name">CALLSIGN</div>
+    <div class="item" data-opt="skill">BOT SKILL</div>
+    <div class="item" data-opt="arena">ARENA</div>
+    <div class="item" data-opt="sound">SOUND</div>
+    <div class="item" data-act="back">BACK</div>
+  </div>
+  <div class="opts">
+    <label class="optrow hidden" data-row="name">
+      <input id="pname" maxlength="14" value="Pilot" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="optrow hidden" data-row="skill"><span id="v-skill">REGULAR</span></div>
+    <div class="optrow hidden" data-row="arena"><span id="v-arena">QUARRY</span></div>
+    <div class="optrow hidden" data-row="sound"><span id="v-sound">ON</span></div>
+  </div>
+</section>
+
+<!-- ===================================================== in-match -->
+<div id="hud" class="hidden">
+  <div id="feed"></div>
+  <div id="toast" class="hidden"></div>
+  <button id="btn-pause" title="Pause (Esc)">&#10073;&#10073;</button>
+</div>
+
+<section class="overlay hidden" id="scr-pause">
+  <div class="menu">
+    <div class="item" data-act="resume">RESUME</div>
+    <div class="item" data-act="options">OPTIONS</div>
+    <div class="item" data-act="leave">QUIT TO MENU</div>
+  </div>
+</section>
+
+<section class="overlay hidden" id="scr-over">
+  <div class="menu">
+    <div class="note" id="overtitle">VICTORY</div>
+    <div class="item" data-act="rematch">REMATCH</div>
+    <div class="item" data-act="leave">MAIN MENU</div>
+  </div>
+</section>
+
+</body>
+</html>
