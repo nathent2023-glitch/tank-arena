@@ -54,9 +54,23 @@ TA = globalThis.TA || {};
       if (s === 'online') {
         /* Either we were asked to join something, or we are browsing rooms. */
         if (pendingJoin) doJoin();
-        else if (TA.ui.isLobby()) TA.net.pollLobbies(lobbyMode);
-      } else if (s === 'offline' && online) {
-        dropToLocal();
+        else if (TA.ui.isLobby()) {
+          TA.net.pollLobbies(lobbyMode);
+          TA.ui.setLobbyStatus('CHOOSE QUICK PLAY, CREATE A LOBBY, OR JOIN ONE BELOW');
+        }
+      } else if (s === 'connecting') {
+        TA.ui.setLobbyStatus('CONNECTING TO MATCH SERVER');
+      } else if (s === 'offline') {
+        if (TA.ui.isLobby()) {
+          TA.ui.setLobbyStatus('OFFLINE - PRESS QUICK PLAY TO RETRY', 'bad');
+        }
+        if (online) dropToLocal();
+      }
+    });
+    /* A connect that has gone on this long is a server waking up, not a hang. */
+    TA.net.on('slow', function () {
+      if (TA.ui.isLobby()) {
+        TA.ui.setLobbyStatus('SERVER IS WAKING UP - THIS CAN TAKE A MOMENT', 'wait');
       }
     });
     TA.net.on('lobbies', function (rooms) {

@@ -11,7 +11,13 @@ TA = globalThis.TA || {};
 TA.net = (function () {
   /* Point this at your Render service. Set once, at deploy time. */
   var SERVER_URL = 'wss://tank-arena-bo1b.onrender.com';
-  var CONNECT_TIMEOUT = 4500;
+  /* A free Render instance sleeps when idle, so the very first connection after a
+     pause can sit there for a full minute while the service boots. Giving up
+     after a few seconds meant the lobby screen looked dead and stayed that way,
+     with nothing on it to say why. Wait long enough to cover a cold start, and
+     let the UI narrate the wait. */
+  var CONNECT_TIMEOUT = 20000;
+  var COLD_START_MS = 3000;   // after this, the UI stops pretending it is quick
   var RENDER_DELAY = 110;   // ms behind the newest snapshot when interpolating
 
   var ws = null, status = 'offline', mode = 'local';
@@ -55,10 +61,16 @@ TA.net = (function () {
       setStatus('offline');
     }, CONNECT_TIMEOUT);
 
+    /* Tell the UI when this is taking long enough to be a cold start, so the
+       lobby can explain itself instead of looking broken. */
+    var slow = setTimeout(function () {
+      if (!finished) emit('slow');
+    }, COLD_START_MS);
+
     try {
       ws = new WebSocket(url);
     } catch (e) {
-      clearTimeout(timer);
+      clearTimeout(timer); clearTimeout(slow);
       connecting = false; gaveUp = true;
       setStatus('offline');
       return;
@@ -66,7 +78,7 @@ TA.net = (function () {
 
     ws.onopen = function () {
       if (finished) { try { ws.close(); } catch (err) {} return; }
-      clearTimeout(timer);
+      clearTimeout(timer); clearTimeout(slow);
       finished = true;
       connecting = false;
       setStatus('online');
@@ -81,7 +93,7 @@ TA.net = (function () {
     ws.onerror = function () { /* onclose always follows; handled there */ };
 
     ws.onclose = function () {
-      clearTimeout(timer);
+      clearTimeout(timer); clearTimeout(slow);
       connecting = false;
       var was = status;
       ws = null;

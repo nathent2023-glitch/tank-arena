@@ -205,6 +205,16 @@ TA.ui = (function () {
     if (el) el.textContent = label;
   }
 
+  /* The lobby used to sit there with an empty list and no explanation, so a
+     cold server and a quiet server were indistinguishable. The status line is
+     the only thing that tells those two apart. */
+  function setLobbyStatus(text, kind) {
+    var el = $('lobby-status');
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'lobby-status' + (kind ? ' ' + kind : '');
+  }
+
   /* ------------------------------------------------------------- init */
 
   function init(state, handlers) {
@@ -319,7 +329,7 @@ TA.ui = (function () {
 
   return {
     init: init, show: show, refresh: refresh, isLobby: isLobby,
-    setLobbies: setLobbies, setLobbyMode: setLobbyMode,
+    setLobbies: setLobbies, setLobbyMode: setLobbyMode, setLobbyStatus: setLobbyStatus,
     feed: feed, stepFeed: stepFeed, toast: toast, showOver: showOver,
     hideOver: hideOver, curIsOver: curIsOver
   };
